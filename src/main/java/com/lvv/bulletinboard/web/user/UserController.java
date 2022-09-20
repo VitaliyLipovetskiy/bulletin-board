@@ -1,6 +1,7 @@
 package com.lvv.bulletinboard.web.user;
 
 import com.lvv.bulletinboard.model.User;
+import com.lvv.bulletinboard.repositiry.CrudUserRepository;
 import com.lvv.bulletinboard.to.UserTo;
 import com.lvv.bulletinboard.util.UserUtil;
 import com.lvv.bulletinboard.web.AuthorizedUser;
@@ -31,6 +32,10 @@ import static com.lvv.bulletinboard.util.validation.ValidationUtil.checkNew;
 public class UserController extends AbstractUserController{
 
     static final String REST_URL = "/api/users";
+
+    public UserController(CrudUserRepository repository, UniqueMailValidator emailValidator) {
+        super(repository, emailValidator);
+    }
 
     @Override
     @GetMapping("/{id}")

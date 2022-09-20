@@ -2,7 +2,7 @@ package com.lvv.bulletinboard.web.user;
 
 import com.lvv.bulletinboard.model.Role;
 import com.lvv.bulletinboard.model.User;
-import com.lvv.bulletinboard.repositiry.UserRepository;
+import com.lvv.bulletinboard.repositiry.CrudUserRepository;
 import com.lvv.bulletinboard.to.UserTo;
 import com.lvv.bulletinboard.util.JsonUtil;
 import com.lvv.bulletinboard.util.UserUtil;
@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.lvv.bulletinboard.web.user.UserTestData.*;
+import static com.lvv.bulletinboard.UserTestData.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -32,7 +32,7 @@ public class UserControllerTest extends AbstractControllerTest {
     private static final String REST_URL = UserController.REST_URL + '/';
 
     @Autowired
-    private UserRepository userRepository;
+    private CrudUserRepository userRepository;
 
     @Test
     @WithUserDetails(value = USER_MAIL)

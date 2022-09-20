@@ -1,10 +1,9 @@
 package com.lvv.bulletinboard.web.user;
 
 import com.lvv.bulletinboard.model.User;
-import com.lvv.bulletinboard.repositiry.UserRepository;
+import com.lvv.bulletinboard.repositiry.CrudUserRepository;
 import com.lvv.bulletinboard.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -16,15 +15,18 @@ import org.springframework.web.bind.annotation.InitBinder;
 @Slf4j
 public abstract class AbstractUserController {
 
-    @Autowired
-    protected UserRepository repository;
+    protected final CrudUserRepository repository;
 
-    @Autowired
-    private UniqueMailValidator emailValidator;
+    protected UniqueMailValidator emailValidator;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(emailValidator);
+    }
+
+    public AbstractUserController(CrudUserRepository repository, UniqueMailValidator emailValidator) {
+        this.repository = repository;
+        this.emailValidator = emailValidator;
     }
 
     public ResponseEntity<User> get(int id) {

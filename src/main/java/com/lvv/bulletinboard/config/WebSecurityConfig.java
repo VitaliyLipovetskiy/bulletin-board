@@ -1,8 +1,7 @@
 package com.lvv.bulletinboard.config;
 
-import com.lvv.bulletinboard.model.Role;
 import com.lvv.bulletinboard.model.User;
-import com.lvv.bulletinboard.repositiry.UserRepository;
+import com.lvv.bulletinboard.repositiry.CrudUserRepository;
 import com.lvv.bulletinboard.web.AuthorizedUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class WebSecurityConfig {
 
-    private final UserRepository userRepository;
+    private final CrudUserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -59,6 +58,7 @@ public class WebSecurityConfig {
 //                .antMatchers(HttpMethod.PUT, "/api/restaurants/**").hasRole(Role.ADMIN.name())
 //                .antMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasRole(Role.ADMIN.name())
                 .antMatchers(HttpMethod.GET, "/api/users/**").authenticated()
+                .antMatchers("/api/ads/**").authenticated()
 //                .antMatchers("/api/voting").hasRole(Role.USER.name())
 //                .antMatchers("/api/profile").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
 //                .antMatchers("/api/**").anonymous()//.authenticated()

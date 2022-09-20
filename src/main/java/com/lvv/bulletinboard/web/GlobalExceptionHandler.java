@@ -1,6 +1,7 @@
 package com.lvv.bulletinboard.web;
 
 import com.lvv.bulletinboard.error.AppException;
+import com.lvv.bulletinboard.util.exception.NotFoundException;
 import com.lvv.bulletinboard.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,23 +44,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleBindingErrors(ex.getBindingResult(), request);
     }
 
-    @NonNull
-    @Override
-    protected ResponseEntity<Object> handleBindException(
-            BindException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
-        return handleBindingErrors(ex.getBindingResult(), request);
-    }
-
-    @ExceptionHandler(AppException.class)
-    public ResponseEntity<?> appException(WebRequest request, AppException ex) {
-        log.error("ApplicationException: {}", ex.getMessage());
-        return createResponseEntity(getDefaultBody(request, ex.getOptions(), null), ex.getStatus());
-    }
+//    @NonNull
+//    @Override
+//    protected ResponseEntity<Object> handleBindException(
+//            BindException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+//        return handleBindingErrors(ex.getBindingResult(), request);
+//    }
+//
+//    @ExceptionHandler(AppException.class)
+//    public ResponseEntity<?> appException(WebRequest request, AppException ex) {
+//        log.error("ApplicationException: {}", ex.getMessage());
+//        return createResponseEntity(getDefaultBody(request, ex.getOptions(), null), ex.getStatus());
+//    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> persistException(WebRequest request, EntityNotFoundException ex) {
         log.error("EntityNotFoundException: {}", ex.getMessage());
         return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(MESSAGE), null), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> persistException(WebRequest request, NotFoundException ex) {
+        log.error("NotFoundException: {}", ex.getMessage());
+        return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(MESSAGE), null), HttpStatus.NOT_FOUND);
     }
 
     private ResponseEntity<Object> handleBindingErrors(BindingResult result, WebRequest request) {
@@ -84,13 +91,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return (ResponseEntity<T>) ResponseEntity.status(status).body(body);
     }
 
-    @NonNull
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(
-            @NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
-        log.error("Exception", ex);
-        super.handleExceptionInternal(ex, body, headers, status, request);
-        return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(), ValidationUtil.getRootCause(ex).getMessage()), status);
-    }
+//    @NonNull
+//    @Override
+//    protected ResponseEntity<Object> handleExceptionInternal(
+//            @NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+//        log.error("Exception", ex);
+//        super.handleExceptionInternal(ex, body, headers, status, request);
+//        return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(), ValidationUtil.getRootCause(ex).getMessage()), status);
+//    }
 }
 

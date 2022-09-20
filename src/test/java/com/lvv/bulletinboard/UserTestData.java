@@ -1,4 +1,4 @@
-package com.lvv.bulletinboard.web.user;
+package com.lvv.bulletinboard;
 
 import com.lvv.bulletinboard.model.Role;
 import com.lvv.bulletinboard.model.User;
@@ -23,11 +23,11 @@ public class UserTestData {
     public static final User user = new User(USER_ID, USER_MAIL, "password", Role.USER);
     public static final User admin = new User(ADMIN_ID, ADMIN_MAIL, "admin", Role.ADMIN, Role.USER);
 
-    public static User getNew() {
+    public static User getNewUser() {
         return new User(null, "new@gmail.com", "newPass", false, new Date(), Collections.singleton(Role.USER));
     }
 
-    public static User getUpdated() {
+    public static User getUpdatedUser() {
         return new User(USER_ID, USER_MAIL, "newPass", false, new Date(), Collections.singleton(Role.ADMIN));
     }
 

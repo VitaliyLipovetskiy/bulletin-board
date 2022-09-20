@@ -8,7 +8,6 @@ import java.util.Optional;
 /**
  * @author Vitalii Lypovetskyi
  */
-@Transactional(readOnly = true)
-public interface UserRepository extends BaseRepository<User> {
+public interface CrudUserRepository extends BaseRepository<User> {
     Optional<User> getByEmail(String email);
 }

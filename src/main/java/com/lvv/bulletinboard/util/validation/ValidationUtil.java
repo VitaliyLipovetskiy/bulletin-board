@@ -2,6 +2,7 @@ package com.lvv.bulletinboard.util.validation;
 
 import com.lvv.bulletinboard.HasId;
 import com.lvv.bulletinboard.error.IllegalRequestDataException;
+import com.lvv.bulletinboard.util.exception.NotFoundException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
@@ -11,6 +12,26 @@ import org.springframework.lang.NonNull;
  */
 @UtilityClass
 public class ValidationUtil {
+
+    public static <T> T checkNotFoundWithId(T object, int id) {
+        checkNotFoundWithId(object != null, id);
+        return object;
+    }
+
+    public static void checkNotFoundWithId(boolean found, int id) {
+        checkNotFound(found, "id=" + id);
+    }
+
+    public static <T> T checkNotFound(T object, String msg) {
+        checkNotFound(object != null, msg);
+        return object;
+    }
+
+    public static void checkNotFound(boolean found, String msg) {
+        if (!found) {
+            throw new NotFoundException("Not found entity with " + msg);
+        }
+    }
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {

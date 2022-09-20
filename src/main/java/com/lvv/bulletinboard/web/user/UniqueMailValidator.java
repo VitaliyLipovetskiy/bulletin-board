@@ -1,7 +1,7 @@
 package com.lvv.bulletinboard.web.user;
 
 import com.lvv.bulletinboard.HasIdAndEmail;
-import com.lvv.bulletinboard.repositiry.UserRepository;
+import com.lvv.bulletinboard.repositiry.CrudUserRepository;
 import com.lvv.bulletinboard.web.GlobalExceptionHandler;
 import com.lvv.bulletinboard.web.SecurityUtil;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 @AllArgsConstructor
 public class UniqueMailValidator implements org.springframework.validation.Validator {
 
-    private final UserRepository repository;
+    private final CrudUserRepository repository;
     private final HttpServletRequest request;
 
     @Override
