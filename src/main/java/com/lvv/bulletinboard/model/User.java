@@ -29,7 +29,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = {"password"})
-public class User  extends NamedEntity implements HasIdAndEmail, Serializable {
+public class User  extends BaseEntity implements HasIdAndEmail, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -66,15 +66,15 @@ public class User  extends NamedEntity implements HasIdAndEmail, Serializable {
     private Set<Role> roles;
 
     public User(User u) {
-        this(u.id, u.name, u.email, u.password, u.enabled, u.registered, u.roles);
+        this(u.id, u.email, u.password, u.enabled, u.registered, u.roles);
     }
 
-    public User(Integer id, String name, String email, String password, Role role, Role... roles) {
-        this(id, name, email, password, true, new Date(), EnumSet.of(role, roles));
+    public User(Integer id, String email, String password, Role role, Role... roles) {
+        this(id, email, password, true, new Date(), EnumSet.of(role, roles));
     }
 
-    public User(Integer id, String name, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
-        super(id, name);
+    public User(Integer id, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
+        super(id);
         this.email = email;
         this.password = password;
         this.enabled = enabled;
