@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/cf26276a0666455b94d439f6d54c9ee9)](https://www.codacy.com/gh/VitaliyLipovetskiy/bulletin-board/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=VitaliyLipovetskiy/bulletin-board&amp;utm_campaign=Badge_Grade)
+
 Тестовое задание
 ================
 
