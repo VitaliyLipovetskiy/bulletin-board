@@ -5,9 +5,6 @@ import com.lvv.bulletinboard.model.User;
 import com.lvv.bulletinboard.util.JsonUtil;
 import com.lvv.bulletinboard.web.MatcherFactory;
 
-import java.util.Collections;
-import java.util.Date;
-
 /**
  * @author Vitalii Lypovetskyi
  */
@@ -22,14 +19,6 @@ public class UserTestData {
 
     public static final User user = new User(USER_ID, USER_MAIL, "password", Role.USER);
     public static final User admin = new User(ADMIN_ID, ADMIN_MAIL, "admin", Role.ADMIN, Role.USER);
-
-    public static User getNewUser() {
-        return new User(null, "new@gmail.com", "newPass", false, new Date(), Collections.singleton(Role.USER));
-    }
-
-    public static User getUpdatedUser() {
-        return new User(USER_ID, USER_MAIL, "newPass", false, new Date(), Collections.singleton(Role.ADMIN));
-    }
 
     public static String jsonWithPassword(User user, String passw) {
         return JsonUtil.writeAdditionProps(user, "password", passw);

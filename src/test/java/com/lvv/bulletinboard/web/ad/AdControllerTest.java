@@ -1,7 +1,8 @@
 package com.lvv.bulletinboard.web.ad;
 
+import com.lvv.bulletinboard.AdTestData;
 import com.lvv.bulletinboard.model.Ad;
-import com.lvv.bulletinboard.repositiry.AdRepository;
+import com.lvv.bulletinboard.service.AdService;
 import com.lvv.bulletinboard.util.JsonUtil;
 import com.lvv.bulletinboard.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class AdControllerTest extends AbstractControllerTest {
     private static final String REST_URL = AdController.REST_URL + '/';
 
     @Autowired
-    private AdRepository repository;
+    private AdService service;
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
@@ -67,7 +68,7 @@ class AdControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + AD_ID_1))
                 .andExpect(status().isNoContent());
-        assertNull(repository.get(AD_ID_1, USER_ID));
+        assertNull(service.get(AD_ID_1, USER_ID));
     }
 
     @Test
@@ -85,12 +86,12 @@ class AdControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newAd)))
                 .andExpect(status().isCreated());
-//
+
         Ad created = AD_MATCHER.readFromJson(action);
         int newId = created.id();
         newAd.setId(newId);
         AD_MATCHER.assertMatch(created, newAd);
-        AD_MATCHER.assertMatch(repository.get(newId, ADMIN_ID), newAd);
+        AD_MATCHER.assertMatch(service.get(newId, ADMIN_ID), newAd);
     }
 
     @Test
@@ -102,7 +103,7 @@ class AdControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        AD_MATCHER.assertMatch(repository.get(AD_ID_2, ADMIN_ID), updated);
+        AD_MATCHER.assertMatch(service.get(AD_ID_2, ADMIN_ID), updated);
     }
 
     @Test
@@ -116,4 +117,35 @@ class AdControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void enable() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + AD_ID_2)
+                .param("enabled", "true")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertTrue(service.get(AD_ID_2, ADMIN_ID).getEnabled());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void enableNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + AdTestData.NOT_FOUND)
+                .param("enabled", "true")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void getFilteredAll() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter?email=gmail"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(AD_MATCHER.contentJson(ad2, ad3));
+    }
 }

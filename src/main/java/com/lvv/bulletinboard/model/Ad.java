@@ -1,7 +1,6 @@
 package com.lvv.bulletinboard.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.lvv.bulletinboard.util.validation.NoHtml;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,7 +12,9 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author Vitalii Lypovetskyi
@@ -24,6 +25,9 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Ad extends BaseEntity implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @NotBlank
     @Size(min = 2, max = 100)
     @Column(name = "name", nullable = false)
@@ -46,19 +50,40 @@ public class Ad extends BaseEntity implements Serializable {
     @NoHtml
     private String image;
 
+    @Column(name = "enabled", nullable = false, columnDefinition = "bool default false")
+    private Boolean enabled = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private User user;
 
-    public Ad(Integer id, String name, String description, String contact, String image) {
+    public Ad(Integer id, String name, String description, String contact, String image, Boolean enabled) {
         super(id);
         this.name = name;
         this.description = description;
         this.contact = contact;
         this.image = image;
+        this.enabled = enabled;
+    }
 
+    public Ad(Integer id, String name, String description, String contact, String image) {
+        this(id, name, description, contact, image, false);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Ad ad = (Ad) o;
+        return Objects.equals(name, ad.name) && Objects.equals(description, ad.description) && Objects.equals(contact, ad.contact) && Objects.equals(image, ad.image) && Objects.equals(enabled, ad.enabled) && Objects.equals(user, ad.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, description, contact, image, enabled, user);
     }
 
     @Override
@@ -69,6 +94,7 @@ public class Ad extends BaseEntity implements Serializable {
                 ", description='" + description + '\'' +
                 ", contact='" + contact + '\'' +
                 ", image='" + image + '\'' +
+                ", enabled='" + enabled + '\'' +
                 ", user=" + user +
                 '}';
     }

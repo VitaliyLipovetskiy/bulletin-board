@@ -1,7 +1,7 @@
 package com.lvv.bulletinboard.web.user;
 
 import com.lvv.bulletinboard.model.User;
-import com.lvv.bulletinboard.repositiry.CrudUserRepository;
+import com.lvv.bulletinboard.repository.UserRepository;
 import com.lvv.bulletinboard.to.UserTo;
 import com.lvv.bulletinboard.util.UserUtil;
 import com.lvv.bulletinboard.web.AuthorizedUser;
@@ -15,9 +15,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 import static com.lvv.bulletinboard.util.validation.ValidationUtil.assureIdConsistent;
 import static com.lvv.bulletinboard.util.validation.ValidationUtil.checkNew;
@@ -33,7 +35,7 @@ public class UserController extends AbstractUserController{
 
     static final String REST_URL = "/api/users";
 
-    public UserController(CrudUserRepository repository, UniqueMailValidator emailValidator) {
+    public UserController(UserRepository repository, UniqueMailValidator emailValidator) {
         super(repository, emailValidator);
     }
 
@@ -66,7 +68,7 @@ public class UserController extends AbstractUserController{
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     @CacheEvict(allEntries = true)
-    public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthorizedUser authUser) {
+    public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal @ApiIgnore AuthorizedUser authUser) {
         assureIdConsistent(userTo, authUser.id());
         User user = authUser.getUser();
         prepareAndSave(UserUtil.updateFromTo(user, userTo));
@@ -78,7 +80,7 @@ public class UserController extends AbstractUserController{
     @CacheEvict(allEntries = true)
     public void enable(@PathVariable int id, @RequestParam boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);
-        User user = repository.getById(id);
-        user.setEnabled(enabled);
+        Optional<User> user = repository.findById(id);
+        user.ifPresent(value -> value.setEnabled(enabled));
     }
 }

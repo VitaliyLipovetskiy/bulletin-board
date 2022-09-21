@@ -5,7 +5,6 @@ import com.lvv.bulletinboard.util.validation.NoHtml;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import lombok.Value;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

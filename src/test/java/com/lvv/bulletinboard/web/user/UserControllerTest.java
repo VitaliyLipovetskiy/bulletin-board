@@ -2,7 +2,7 @@ package com.lvv.bulletinboard.web.user;
 
 import com.lvv.bulletinboard.model.Role;
 import com.lvv.bulletinboard.model.User;
-import com.lvv.bulletinboard.repositiry.CrudUserRepository;
+import com.lvv.bulletinboard.repository.UserRepository;
 import com.lvv.bulletinboard.to.UserTo;
 import com.lvv.bulletinboard.util.JsonUtil;
 import com.lvv.bulletinboard.util.UserUtil;
@@ -27,12 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Vitalii Lypovetskyi
  */
-public class UserControllerTest extends AbstractControllerTest {
+class UserControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = UserController.REST_URL + '/';
 
     @Autowired
-    private CrudUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Test
     @WithUserDetails(value = USER_MAIL)
@@ -41,8 +41,7 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(user))
-        ;
+                .andExpect(USER_MATCHER.contentJson(user));
     }
 
     @Test
@@ -71,16 +70,6 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void enableNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.patch(REST_URL + NOT_FOUND)
-                .param("enabled", "false")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     void getUnAuth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isUnauthorized());
@@ -96,6 +85,16 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertFalse(userRepository.getById(USER_ID).isEnabled());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void enableNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + NOT_FOUND)
+                .param("enabled", "false")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

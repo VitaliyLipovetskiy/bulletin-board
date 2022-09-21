@@ -1,4 +1,4 @@
-package com.lvv.bulletinboard.repositiry;
+package com.lvv.bulletinboard.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

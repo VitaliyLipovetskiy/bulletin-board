@@ -1,7 +1,7 @@
 package com.lvv.bulletinboard.config;
 
 import com.lvv.bulletinboard.model.User;
-import com.lvv.bulletinboard.repositiry.CrudUserRepository;
+import com.lvv.bulletinboard.repository.UserRepository;
 import com.lvv.bulletinboard.web.AuthorizedUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class WebSecurityConfig {
 
-    private final CrudUserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -50,23 +50,15 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.POST,"/api/admin").anonymous()
                 .antMatchers(HttpMethod.POST,"/api/users").anonymous()
-//                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
-//                .antMatchers("/api/profile/**").hasRole(Role.USER.name())
-//                .antMatchers(HttpMethod.POST, "/api/restaurants/**").hasRole(Role.ADMIN.name())
-//                .antMatchers(HttpMethod.PUT, "/api/restaurants/**").hasRole(Role.ADMIN.name())
-//                .antMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasRole(Role.ADMIN.name())
                 .antMatchers(HttpMethod.GET, "/api/users/**").authenticated()
                 .antMatchers("/api/ads/**").authenticated()
-//                .antMatchers("/api/voting").hasRole(Role.USER.name())
-//                .antMatchers("/api/profile").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-//                .antMatchers("/api/**").anonymous()//.authenticated()
+                .antMatchers("/api/board/**").authenticated()
+                .antMatchers("/swagger-ui.html").anonymous()//.authenticated()
+                .antMatchers("/swagger-resources/**").anonymous()//.authenticated()
                 .anyRequest()
                 .permitAll()
                 .and().httpBasic()
                 .and().build();
     }
-
-
 }

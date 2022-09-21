@@ -1,8 +1,6 @@
 package com.lvv.bulletinboard.web;
 
-import com.lvv.bulletinboard.error.AppException;
 import com.lvv.bulletinboard.util.exception.NotFoundException;
-import com.lvv.bulletinboard.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -11,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,19 +40,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         return handleBindingErrors(ex.getBindingResult(), request);
     }
-
-//    @NonNull
-//    @Override
-//    protected ResponseEntity<Object> handleBindException(
-//            BindException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
-//        return handleBindingErrors(ex.getBindingResult(), request);
-//    }
-//
-//    @ExceptionHandler(AppException.class)
-//    public ResponseEntity<?> appException(WebRequest request, AppException ex) {
-//        log.error("ApplicationException: {}", ex.getMessage());
-//        return createResponseEntity(getDefaultBody(request, ex.getOptions(), null), ex.getStatus());
-//    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> persistException(WebRequest request, EntityNotFoundException ex) {
@@ -91,13 +75,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return (ResponseEntity<T>) ResponseEntity.status(status).body(body);
     }
 
-//    @NonNull
-//    @Override
-//    protected ResponseEntity<Object> handleExceptionInternal(
-//            @NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
-//        log.error("Exception", ex);
-//        super.handleExceptionInternal(ex, body, headers, status, request);
-//        return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(), ValidationUtil.getRootCause(ex).getMessage()), status);
-//    }
 }
 
